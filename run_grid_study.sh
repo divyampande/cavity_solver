@@ -8,7 +8,7 @@ echo "=========================================="
 echo ""
 
 # Grid sizes to test
-grids=(51 76 101)
+grids=(51 76 101 126)
 
 # Create directory for grid study results
 mkdir -p results/grid_study
@@ -51,8 +51,8 @@ import matplotlib.pyplot as plt
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
-grids = [51, 76, 101]
-colors = ['blue', 'green', 'red']
+grids = [51, 76, 101, 126]
+colors = ['blue', 'green', 'red', 'orange']
 
 # Load Ghia data
 ghia = {}

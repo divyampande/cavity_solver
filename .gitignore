@@ -4,3 +4,4 @@
 *.tmp
 cavity_solver
 *.pdf
+*/results/grid_study

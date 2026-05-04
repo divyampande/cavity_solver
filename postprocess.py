@@ -1,12 +1,10 @@
-#!/usr/bin/env python3
 """
 Post-processing script for Lid-Driven Cavity simulation
-Generates all required plots as per assignment requirements
 """
 
+from matplotlib.colors import LightSource
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import cm
 import os
 
 # Set style
@@ -114,7 +112,7 @@ def plot_streamlines(output_dir="results"):
 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/streamlines.png", dpi=300, bbox_inches="tight")
-    print("✓ Saved: streamlines.png")
+    print("Saved: streamlines.png")
     plt.close()
 
 
@@ -138,7 +136,7 @@ def plot_vorticity(output_dir="results"):
 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/vorticity.png", dpi=300, bbox_inches="tight")
-    print("✓ Saved: vorticity.png")
+    print("Saved: vorticity.png")
     plt.close()
 
 
@@ -158,7 +156,6 @@ def plot_pressure(output_dir="results"):
 
     levels = np.linspace(np.min(p), np.max(p), 30)
 
-    # 4. Use a diverging colormap (Red-Blue reversed)
     cf = ax.contourf(X, Y, p, levels=levels, cmap="viridis", extend="both")
     cbar = plt.colorbar(cf, ax=ax)
     cbar.set_label("Pressure (p)", rotation=270, labelpad=20)
@@ -173,7 +170,7 @@ def plot_pressure(output_dir="results"):
 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/pressure.png", dpi=300, bbox_inches="tight")
-    print("✓ Saved: pressure.png")
+    print("Saved: pressure.png")
     plt.close()
 
 
@@ -181,16 +178,27 @@ def plot_pressure_surface(output_dir="results"):
     """Advanced Plot: 3D Surface Topology of the Pressure Field"""
     X, Y, p = read_field_data(f"{output_dir}/p.dat")
 
-    # Optional: Clip the absolute most extreme 1% so the spikes don't dwarf the whole plot
+    # Clip the absolute most extreme so the spikes don't dwarf the whole plot
     p_clipped = np.clip(p, np.percentile(p, 0.5), np.percentile(p, 99.5))
 
     fig = plt.figure(figsize=(10, 8))
-    # Note: Requires mpl_toolkits.mplot3d (usually imported automatically in modern matplotlib)
     ax = fig.add_subplot(111, projection="3d")
+    ls = LightSource(azdeg=315, altdeg=45)
+    rgb = ls.shade(p_clipped, cmap=plt.cm.RdBu_r, vert_exag=0.1, blend_mode="soft")
 
     # Plot the surface
     surf = ax.plot_surface(
-        X, Y, p_clipped, cmap="RdBu_r", linewidth=0, antialiased=True, alpha=0.9
+        X,
+        Y,
+        p_clipped,
+        cmap="RdBu_r",
+        linewidth=0,
+        rstride=2,
+        cstride=2,
+        edgecolor="none",
+        antialiased=True,
+        alpha=0.9,
+        shade=False,
     )
 
     # Add a color bar
@@ -202,11 +210,11 @@ def plot_pressure_surface(output_dir="results"):
     ax.set_zlabel("Pressure (p)")
 
     # Adjust viewing angle for best look at the top corners
-    ax.view_init(elev=35, azim=-45)
+    ax.view_init(elev=25, azim=-135)
 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/pressure_3d_surface.png", dpi=300)
-    print("✓ Saved: pressure_3d_surface.png")
+    print("Saved: pressure_3d_surface.png")
     plt.close()
 
 
@@ -227,7 +235,7 @@ def plot_u_velocity_centerline(output_dir="results"):
     # Plot current simulation
     ax.plot(u, y, "b-", linewidth=2, label="Current Simulation")
 
-    # Plot Ghia data if available
+    # Plot Ghia data
     if has_ghia:
         ax.plot(
             ghia["u"],
@@ -251,7 +259,7 @@ def plot_u_velocity_centerline(output_dir="results"):
 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/u_velocity_centerline.png", dpi=300, bbox_inches="tight")
-    print("✓ Saved: u_velocity_centerline.png")
+    print("Saved: u_velocity_centerline.png")
     plt.close()
 
 
@@ -272,7 +280,7 @@ def plot_v_velocity_centerline(output_dir="results"):
     # Plot current simulation
     ax.plot(x, v, "b-", linewidth=2, label="Current Simulation")
 
-    # Plot Ghia data if available
+    # Plot Ghia data
     if has_ghia:
         ax.plot(
             ghia["x_v"],
@@ -296,7 +304,7 @@ def plot_v_velocity_centerline(output_dir="results"):
 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/v_velocity_centerline.png", dpi=300, bbox_inches="tight")
-    print("✓ Saved: v_velocity_centerline.png")
+    print("Saved: v_velocity_centerline.png")
     plt.close()
 
 
@@ -330,7 +338,7 @@ def plot_velocity_vectors(output_dir="results"):
 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/velocity_field.png", dpi=300, bbox_inches="tight")
-    print("✓ Saved: velocity_field.png")
+    print("Saved: velocity_field.png")
     plt.close()
 
 

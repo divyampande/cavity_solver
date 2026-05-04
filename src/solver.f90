@@ -47,11 +47,11 @@ contains
     
     
     ! Advance vorticity equation in time using ADI or explicit scheme
-    subroutine advance_vorticity(omega, psi, u, v, nx, ny, dx, dy, dt, Re)
+    subroutine advance_vorticity(omega, u, v, nx, ny, dx, dy, dt, Re)
         integer, intent(in) :: nx, ny
         real(8), intent(in) :: dx, dy, dt, Re
         real(8), dimension(0:nx, 0:ny), intent(inout) :: omega
-        real(8), dimension(0:nx, 0:ny), intent(in) :: psi, u, v
+        real(8), dimension(0:nx, 0:ny), intent(in) :: u, v
         
         real(8), dimension(0:nx, 0:ny) :: omega_new
         real(8) :: dwdx, dwdy, d2wdx2, d2wdy2
@@ -135,10 +135,10 @@ contains
     
     
     ! Compute pressure from stream function and vorticity
-    subroutine compute_pressure(p, psi, omega, nx, ny, dx, dy, Re)
+    subroutine compute_pressure(p, psi, nx, ny, dx, dy, Re)
         integer, intent(in) :: nx, ny
         real(8), intent(in) :: dx, dy, Re
-        real(8), dimension(0:nx, 0:ny), intent(in) :: psi, omega
+        real(8), dimension(0:nx, 0:ny), intent(in) :: psi
         real(8), dimension(0:nx, 0:ny), intent(out) :: p
         
         real(8) :: d2psidx2, d2psidy2, d2psidxdy

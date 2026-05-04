@@ -97,8 +97,8 @@ def plot_streamlines(output_dir="results"):
     # levels = np.linspace(psi.min(), psi.max(), 30)
     levels = np.concatenate(
         [
-            np.linspace(np.min(psi), -1e-6, 15),
-            np.linspace(1e-7, np.max(psi) if np.max(psi) > 1e-7 else 1e-6, 10),
+            np.linspace(np.min(psi), -1e-6, 30),
+            np.linspace(1e-7, np.max(psi) if np.max(psi) > 1e-7 else 1e-6, 20),
         ]
     )
     levels = np.sort(np.unique(levels))
@@ -125,10 +125,11 @@ def plot_vorticity(output_dir="results"):
     fig, ax = plt.subplots(figsize=(8, 8))
 
     # Vorticity contours
-    levels = np.linspace(omega.min(), omega.max(), 40)
+    levels = np.linspace(omega.min(), omega.max(), 200)
     cf = ax.contourf(X, Y, omega, levels=levels, cmap="RdBu_r")
     cbar = plt.colorbar(cf, ax=ax)
     cbar.set_label("Vorticity (ω)", rotation=270, labelpad=20)
+    cs = ax.contour(X, Y, omega, levels=500, colors="black", linewidths=0.5, alpha=0.5)
 
     ax.set_xlabel("x")
     ax.set_ylabel("y")
@@ -147,14 +148,23 @@ def plot_pressure(output_dir="results"):
 
     fig, ax = plt.subplots(figsize=(8, 8))
 
-    # Pressure contours
-    levels = np.linspace(p.min(), p.max(), 40)
-    cf = ax.contourf(X, Y, p, levels=levels, cmap="viridis")
+    # 1. Get the rough limits ignoring the corner singularities
+    p_min_raw = np.percentile(p, 0.5)
+    p_max_raw = np.percentile(p, 99.5)
+
+    # 2. Find the absolute maximum to make the scale perfectly symmetric
+    p_limit = max(abs(p_min_raw), abs(p_max_raw))
+
+    # 3. Create symmetric levels centered exactly on zero
+    levels = np.linspace(-p_limit, p_limit, 200)
+
+    # 4. Use a diverging colormap (Red-Blue reversed)
+    cf = ax.contourf(X, Y, p, levels=levels, cmap="viridis", extend="both")
     cbar = plt.colorbar(cf, ax=ax)
     cbar.set_label("Pressure (p)", rotation=270, labelpad=20)
 
     # Add contour lines
-    cs = ax.contour(X, Y, p, levels=10, colors="black", linewidths=0.5, alpha=0.5)
+    cs = ax.contour(X, Y, p, levels=1000, colors="black", linewidths=0.5, alpha=0.5)
 
     ax.set_xlabel("x")
     ax.set_ylabel("y")
@@ -164,6 +174,39 @@ def plot_pressure(output_dir="results"):
     plt.tight_layout()
     plt.savefig(f"{output_dir}/pressure.png", dpi=300, bbox_inches="tight")
     print("✓ Saved: pressure.png")
+    plt.close()
+
+
+def plot_pressure_surface(output_dir="results"):
+    """Advanced Plot: 3D Surface Topology of the Pressure Field"""
+    X, Y, p = read_field_data(f"{output_dir}/p.dat")
+
+    # Optional: Clip the absolute most extreme 1% so the spikes don't dwarf the whole plot
+    p_clipped = np.clip(p, np.percentile(p, 0.5), np.percentile(p, 99.5))
+
+    fig = plt.figure(figsize=(10, 8))
+    # Note: Requires mpl_toolkits.mplot3d (usually imported automatically in modern matplotlib)
+    ax = fig.add_subplot(111, projection="3d")
+
+    # Plot the surface
+    surf = ax.plot_surface(
+        X, Y, p_clipped, cmap="RdBu_r", linewidth=0, antialiased=True, alpha=0.9
+    )
+
+    # Add a color bar
+    fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10, pad=0.1, label="Relative Pressure")
+
+    ax.set_title("3D Pressure Topology", fontsize=13, fontweight="bold")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_zlabel("Pressure (p)")
+
+    # Adjust viewing angle for best look at the top corners
+    ax.view_init(elev=35, azim=-45)
+
+    plt.tight_layout()
+    plt.savefig(f"{output_dir}/pressure_3d_surface.png", dpi=300)
+    print("✓ Saved: pressure_3d_surface.png")
     plt.close()
 
 
@@ -311,6 +354,7 @@ def main():
     plot_streamlines(output_dir)
     plot_vorticity(output_dir)
     plot_pressure(output_dir)
+    plot_pressure_surface(output_dir)
     plot_u_velocity_centerline(output_dir)
     plot_v_velocity_centerline(output_dir)
     plot_velocity_vectors(output_dir)

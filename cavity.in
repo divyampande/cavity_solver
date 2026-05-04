@@ -15,7 +15,7 @@ max_time_steps  100000   # Maximum number of time steps
 tol_steady  1.0e-6  # Convergence tolerance for steady state
 
 # Poisson solver (SOR)
-omega_sor  1.7      # SOR relaxation parameter (1.0 < ω < 2.0)
+omega_sor  1.87      # SOR relaxation parameter (1.0 < ω < 2.0)
 max_iter_psi  10000 # Maximum iterations for Poisson solver
 tol_psi  1.0e-6     # Tolerance for Poisson solver
 

@@ -15,7 +15,6 @@ program lid_driven_cavity
     ! Solver variables
     integer :: time_step, iter_count
     real(8) :: time, residual, max_residual
-    character(len=100) :: output_file
     
     ! Read input parameters
     call read_input_file('cavity.in', params)
@@ -69,7 +68,7 @@ program lid_driven_cavity
         call compute_velocity(psi, u, v, nx, ny, dx, dy)
         
         ! 3. Advance vorticity in time
-        call advance_vorticity(omega, psi, u, v, nx, ny, dx, dy, params%dt, params%Re)
+        call advance_vorticity(omega, u, v, nx, ny, dx, dy, params%dt, params%Re)
         
         ! 4. Apply vorticity boundary conditions
         call apply_omega_bc(omega, psi, nx, ny, dx, dy, params%u_lid)
@@ -116,7 +115,7 @@ program lid_driven_cavity
     end if
     
     ! Compute final pressure field
-    call compute_pressure(p, psi, omega, nx, ny, dx, dy, params%Re)
+    call compute_pressure(p, psi, nx, ny, dx, dy, params%Re)
     
     ! Write output files
     print *

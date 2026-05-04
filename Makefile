@@ -39,7 +39,7 @@ $(TARGET): $(OBJECTS)
 	@echo "Build successful: $(TARGET)"
 
 # Compile object files
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.f90
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.f90 | $(BUILD_DIR)
 	$(FC) $(FFLAGS) -J$(BUILD_DIR) -c $< -o $@
 
 # Debug build
@@ -47,7 +47,7 @@ debug: FFLAGS = $(DEBUG_FLAGS)
 debug: clean all
 
 # Run simulation
-run: $(TARGET)
+run: $(TARGET) | $(RESULTS_DIR)
 	./$(TARGET)
 
 # Clean build artifacts

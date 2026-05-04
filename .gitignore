@@ -6,3 +6,4 @@ cavity_solver
 *.o
 *.mod
 *.smod
+results/grid_study/*

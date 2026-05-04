@@ -1,0 +1,73 @@
+ ============================================
+ Simulation Parameters:
+ ============================================
+ Grid size (nx x ny):                 100  x          100
+ Reynolds number:               100.00000000000000     
+ Time step:                     2.5000000000000001E-004
+ Lid velocity:                  1.0000000000000000     
+ SOR parameter:                 1.7000000000000000     
+ Max Poisson iterations:            10000
+ Max time steps:                   100000
+ Output interval:                    1000
+ Stream function tolerance:     9.9999999999999995E-007
+ Steady state tolerance:        9.9999999999999995E-007
+ ============================================
+
+ Grid spacing: dx =   1.0000000000000000E-002 , dy =   1.0000000000000000E-002
+
+ Starting time integration...
+ ============================================
+Step:    1000  Time:    0.2500  Max Δω:  0.5889E-02  Poisson iter:    19
+Step:    2000  Time:    0.5000  Max Δω:  0.2090E-02  Poisson iter:    13
+Step:    3000  Time:    0.7500  Max Δω:  0.1202E-02  Poisson iter:    10
+Step:    4000  Time:    1.0000  Max Δω:  0.1297E-02  Poisson iter:     9
+Step:    5000  Time:    1.2500  Max Δω:  0.7316E-03  Poisson iter:     7
+Step:    6000  Time:    1.5000  Max Δω:  0.5994E-03  Poisson iter:     6
+Step:    7000  Time:    1.7500  Max Δω:  0.4315E-03  Poisson iter:     5
+Step:    8000  Time:    2.0000  Max Δω:  0.2803E-03  Poisson iter:     4
+Step:    9000  Time:    2.2500  Max Δω:  0.1843E-03  Poisson iter:     3
+Step:   10000  Time:    2.5000  Max Δω:  0.1597E-03  Poisson iter:     3
+Step:   11000  Time:    2.7500  Max Δω:  0.1214E-03  Poisson iter:     2
+Step:   12000  Time:    3.0000  Max Δω:  0.1001E-03  Poisson iter:     2
+Step:   13000  Time:    3.2500  Max Δω:  0.8908E-04  Poisson iter:     2
+Step:   14000  Time:    3.5000  Max Δω:  0.6969E-04  Poisson iter:     1
+Step:   15000  Time:    3.7500  Max Δω:  0.5875E-04  Poisson iter:     1
+Step:   16000  Time:    4.0000  Max Δω:  0.4973E-04  Poisson iter:     1
+Step:   17000  Time:    4.2500  Max Δω:  0.4231E-04  Poisson iter:     1
+Step:   18000  Time:    4.5000  Max Δω:  0.3748E-04  Poisson iter:     1
+Step:   19000  Time:    4.7500  Max Δω:  0.3208E-04  Poisson iter:     1
+Step:   20000  Time:    5.0000  Max Δω:  0.2754E-04  Poisson iter:     1
+Step:   21000  Time:    5.2500  Max Δω:  0.2367E-04  Poisson iter:     1
+Step:   22000  Time:    5.5000  Max Δω:  0.2037E-04  Poisson iter:     1
+Step:   23000  Time:    5.7500  Max Δω:  0.1756E-04  Poisson iter:     1
+Step:   24000  Time:    6.0000  Max Δω:  0.1515E-04  Poisson iter:     1
+Step:   25000  Time:    6.2500  Max Δω:  0.1308E-04  Poisson iter:     1
+Step:   26000  Time:    6.5000  Max Δω:  0.1130E-04  Poisson iter:     1
+Step:   27000  Time:    6.7500  Max Δω:  0.9812E-05  Poisson iter:     1
+Step:   28000  Time:    7.0000  Max Δω:  0.8582E-05  Poisson iter:     1
+Step:   29000  Time:    7.2500  Max Δω:  0.7496E-05  Poisson iter:     1
+Step:   30000  Time:    7.5000  Max Δω:  0.6542E-05  Poisson iter:     1
+Step:   31000  Time:    7.7500  Max Δω:  0.5704E-05  Poisson iter:     1
+Step:   32000  Time:    8.0000  Max Δω:  0.4969E-05  Poisson iter:     1
+Step:   33000  Time:    8.2500  Max Δω:  0.4326E-05  Poisson iter:     1
+Step:   34000  Time:    8.5000  Max Δω:  0.3765E-05  Poisson iter:     1
+Step:   35000  Time:    8.7500  Max Δω:  0.3274E-05  Poisson iter:     1
+Step:   36000  Time:    9.0000  Max Δω:  0.2847E-05  Poisson iter:     1
+Step:   37000  Time:    9.2500  Max Δω:  0.2474E-05  Poisson iter:     1
+Step:   38000  Time:    9.5000  Max Δω:  0.2149E-05  Poisson iter:     1
+Step:   39000  Time:    9.7500  Max Δω:  0.1867E-05  Poisson iter:     1
+Step:   40000  Time:   10.0000  Max Δω:  0.1622E-05  Poisson iter:     1
+Step:   41000  Time:   10.2500  Max Δω:  0.1408E-05  Poisson iter:     1
+Step:   42000  Time:   10.5000  Max Δω:  0.1222E-05  Poisson iter:     1
+Step:   43000  Time:   10.7500  Max Δω:  0.1061E-05  Poisson iter:     1
+
+ ============================================
+ Steady state reached!
+ Time step:                 43421
+ Physical time:         10.855249999997376     
+ Max vorticity change:   9.9986208246249930E-007
+ ============================================
+
+ Writing output files to results/ directory...
+ Simulation completed successfully!
+

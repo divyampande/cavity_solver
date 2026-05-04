@@ -1,7 +1,8 @@
-*/build
 *.dat
 *.log
 *.tmp
 cavity_solver
 *.pdf
-*/results/grid_study
+*.o
+*.mod
+*.smod

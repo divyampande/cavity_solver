@@ -135,23 +135,26 @@ contains
     
     
     ! Compute pressure from stream function and vorticity
-    subroutine compute_pressure(p, psi, nx, ny, dx, dy, Re)
+! Compute pressure from stream function using Pressure Poisson Equation
+    subroutine compute_pressure(p, psi, nx, ny, dx, dy)
         integer, intent(in) :: nx, ny
-        real(8), intent(in) :: dx, dy, Re
+        real(8), intent(in) :: dx, dy
         real(8), dimension(0:nx, 0:ny), intent(in) :: psi
         real(8), dimension(0:nx, 0:ny), intent(out) :: p
         
+        real(8), dimension(0:nx, 0:ny) :: rhs
         real(8) :: d2psidx2, d2psidy2, d2psidxdy
-        real(8) :: dx2, dy2, inv_re
-        integer :: i, j
+        real(8) :: dx2, dy2, denom, p_new, residual, p_mean
+        real(8), parameter :: tol = 1.0d-6, omega_p = 1.7d0
+        integer, parameter :: max_iter = 10000
+        integer :: i, j, iter
         
         dx2 = dx * dx
         dy2 = dy * dy
-        inv_re = 1.0d0 / Re
+        denom = 2.0d0 * (dx2 + dy2)
         
-        ! Pressure Poisson equation from incompressible NS
-        ! ∇²p = -[(∂²ψ/∂x∂y)² - (∂²ψ/∂x²)(∂²ψ/∂y²)]
-        
+        ! Compute RHS of pressure Poisson equation
+        ! For incompressible NS: ∇²p = 2[(∂²ψ/∂x²)(∂²ψ/∂y²) - (∂²ψ/∂x∂y)²]
         do j = 1, ny-1
             do i = 1, nx-1
                 d2psidx2 = (psi(i+1,j) - 2.0d0*psi(i,j) + psi(i-1,j)) / dx2
@@ -160,15 +163,46 @@ contains
                 d2psidxdy = (psi(i+1,j+1) - psi(i+1,j-1) - psi(i-1,j+1) + psi(i-1,j-1)) / &
                            (4.0d0 * dx * dy)
                 
-                p(i,j) = -(d2psidxdy**2 - d2psidx2 * d2psidy2)
+                ! Correct RHS formula
+                rhs(i,j) = 2.0d0 * (d2psidx2 * d2psidy2 - d2psidxdy**2)
             end do
         end do
         
-        ! Boundary conditions (zero gradient)
-        p(0,:) = p(1,:)
-        p(nx,:) = p(nx-1,:)
-        p(:,0) = p(:,1)
-        p(:,ny) = p(:,ny-1)
+        ! Initialize pressure field
+        p = 0.0d0
+        
+        ! Solve ∇²p = rhs using SOR with Neumann boundary conditions
+        do iter = 1, max_iter
+            residual = 0.0d0
+            
+            do j = 1, ny-1
+                do i = 1, nx-1
+                    p_new = ((p(i+1,j) + p(i-1,j)) * dy2 + &
+                            (p(i,j+1) + p(i,j-1)) * dx2 - &
+                            rhs(i,j) * dx2 * dy2) / denom
+                    
+                    p_new = p(i,j) + omega_p * (p_new - p(i,j))
+                    residual = max(residual, abs(p_new - p(i,j)))
+                    p(i,j) = p_new
+                end do
+            end do
+            
+            ! Apply Neumann boundary conditions (∂p/∂n = 0)
+            p(0,:) = p(1,:)
+            p(nx,:) = p(nx-1,:)
+            p(:,0) = p(:,1)
+            p(:,ny) = p(:,ny-1)
+            
+            if (residual < tol) exit
+        end do
+        
+        if (iter >= max_iter) then
+            print *, "Warning: Pressure solver did not converge. Residual = ", residual
+        end if
+        
+        ! Remove mean pressure (pressure is defined up to a constant)
+        p_mean = sum(p(1:nx-1, 1:ny-1)) / real((nx-1)*(ny-1), 8)
+        p = p - p_mean
         
     end subroutine compute_pressure
     

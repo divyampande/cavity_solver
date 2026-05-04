@@ -115,7 +115,7 @@ program lid_driven_cavity
     end if
     
     ! Compute final pressure field
-    call compute_pressure(p, psi, nx, ny, dx, dy, params%Re)
+    call compute_pressure(p, psi, nx, ny, dx, dy)
     
     ! Write output files
     print *

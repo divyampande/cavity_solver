@@ -148,15 +148,15 @@ def plot_pressure(output_dir="results"):
 
     fig, ax = plt.subplots(figsize=(8, 8))
 
-    # 1. Get the rough limits ignoring the corner singularities
-    p_min_raw = np.percentile(p, 0.5)
-    p_max_raw = np.percentile(p, 99.5)
+    # # Get the rough limits ignoring the corner singularities
+    # p_min_raw = np.percentile(p, 0)
+    # p_max_raw = np.percentile(p, 100)
 
-    # 2. Find the absolute maximum to make the scale perfectly symmetric
-    p_limit = max(abs(p_min_raw), abs(p_max_raw))
+    # # Find the absolute maximum to make the scale perfectly symmetric
+    # p_limit = max(abs(p_min_raw), abs(p_max_raw))
+    # levels = np.linspace(-p_limit, p_limit, 30)
 
-    # 3. Create symmetric levels centered exactly on zero
-    levels = np.linspace(-p_limit, p_limit, 200)
+    levels = np.linspace(np.min(p), np.max(p), 30)
 
     # 4. Use a diverging colormap (Red-Blue reversed)
     cf = ax.contourf(X, Y, p, levels=levels, cmap="viridis", extend="both")
@@ -164,7 +164,7 @@ def plot_pressure(output_dir="results"):
     cbar.set_label("Pressure (p)", rotation=270, labelpad=20)
 
     # Add contour lines
-    cs = ax.contour(X, Y, p, levels=1000, colors="black", linewidths=0.5, alpha=0.5)
+    cs = ax.contour(X, Y, p, levels=100, colors="black", linewidths=0.5, alpha=0.5)
 
     ax.set_xlabel("x")
     ax.set_ylabel("y")

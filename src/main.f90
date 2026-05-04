@@ -15,6 +15,18 @@ program lid_driven_cavity
     ! Solver variables
     integer :: time_step, iter_count
     real(wp) :: time, residual, max_residual
+    character(len=100) :: input_filename
+    integer :: num_args
+
+    ! Check if an argument was provided
+    num_args = command_argument_count()
+    if (num_args >= 1) then
+        call get_command_argument(1, input_filename)
+    else
+        input_filename = 'cavity.in' ! Default fallback
+    end if
+
+    call read_input_file(input_filename, params)
     
     ! Read input parameters
     call read_input_file('cavity.in', params)

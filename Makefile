@@ -47,8 +47,9 @@ debug: FFLAGS = $(DEBUG_FLAGS)
 debug: clean all
 
 # Run simulation
+INPUT ?= 
 run: $(TARGET) | $(RESULTS_DIR)
-	./$(TARGET)
+	./$(TARGET) $(INPUT)
 
 # Clean build artifacts
 clean:

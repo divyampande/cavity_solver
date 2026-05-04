@@ -8,13 +8,13 @@ program lid_driven_cavity
     
     ! Grid variables
     integer :: nx, ny, i, j
-    real(8) :: dx, dy
-    real(8), allocatable, dimension(:,:) :: psi, omega, u, v, p
-    real(8), allocatable, dimension(:,:) :: omega_old
+    real(wp) :: dx, dy
+    real(wp), allocatable, dimension(:,:) :: psi, omega, u, v, p
+    real(wp), allocatable, dimension(:,:) :: omega_old
     
     ! Solver variables
     integer :: time_step, iter_count
-    real(8) :: time, residual, max_residual
+    real(wp) :: time, residual, max_residual
     
     ! Read input parameters
     call read_input_file('cavity.in', params)
@@ -31,19 +31,19 @@ program lid_driven_cavity
     allocate(p(0:nx, 0:ny))
     
     ! Initialize grid
-    dx = 1.0d0 / dble(nx)
-    dy = 1.0d0 / dble(ny)
+    dx = 1.0_wp / real(nx, wp)
+    dy = 1.0_wp / real(ny, wp)
     
     print *, "Grid spacing: dx =", dx, ", dy =", dy
     print *
     
     ! Initialize fields
-    psi = 0.0d0
-    omega = 0.0d0
-    omega_old = 0.0d0
-    u = 0.0d0
-    v = 0.0d0
-    p = 0.0d0
+    psi = 0.0_wp
+    omega = 0.0_wp
+    omega_old = 0.0_wp
+    u = 0.0_wp
+    v = 0.0_wp
+    p = 0.0_wp
     
     ! Apply initial boundary conditions
     call apply_psi_bc(psi, nx, ny)
@@ -53,31 +53,25 @@ program lid_driven_cavity
     print *, "============================================"
     
     ! Main time-stepping loop
-    time = 0.0d0
+    time = 0.0_wp
     do time_step = 1, params%max_time_steps
-        
-        ! Store old vorticity for convergence check
         omega_old = omega
         
-        ! 1. Solve for stream function from vorticity (∇²ψ = -ω)
         call solve_poisson_sor(psi, omega, nx, ny, dx, dy, params%omega_sor, &
                               params%tol_psi, params%max_iter_psi, iter_count)
         call apply_psi_bc(psi, nx, ny)
         
-        ! 2. Compute velocity from stream function
-        call compute_velocity(psi, u, v, nx, ny, dx, dy)
+        call compute_velocity(psi, u, v, nx, ny, dx, dy, params%u_lid)
         
-        ! 3. Advance vorticity in time
         call advance_vorticity(omega, u, v, nx, ny, dx, dy, params%dt, params%Re)
         
-        ! 4. Apply vorticity boundary conditions
         call apply_omega_bc(omega, psi, nx, ny, dx, dy, params%u_lid)
         
         ! Update time
         time = time + params%dt
         
         ! Check convergence to steady state
-        max_residual = 0.0d0
+        max_residual = 0.0_wp
         do j = 0, ny
             do i = 0, nx
                 residual = abs(omega(i,j) - omega_old(i,j))
@@ -115,7 +109,11 @@ program lid_driven_cavity
     end if
     
     ! Compute final pressure field
-    call compute_pressure(p, psi, nx, ny, dx, dy)
+    ! Compute final pressure field using parameters from input
+    call compute_pressure(p, psi, nx, ny, dx, dy, &
+                          params%omega_sor_p, &
+                          params%tol_pressure, &
+                          params%max_iter_pressure)
     
     ! Write output files
     print *
@@ -127,7 +125,6 @@ program lid_driven_cavity
     call write_field('results/v.dat', v, nx, ny, dx, dy)
     call write_field('results/p.dat', p, nx, ny, dx, dy)
     
-    ! Write centerline profiles for comparison with Ghia et al.
     call write_centerline_profiles(u, v, nx, ny, dx, dy)
     
     print *, "Simulation completed successfully!"
@@ -142,11 +139,11 @@ contains
     subroutine write_field(filename, field, nx, ny, dx, dy)
         character(len=*), intent(in) :: filename
         integer, intent(in) :: nx, ny
-        real(8), intent(in) :: dx, dy
-        real(8), dimension(0:nx, 0:ny), intent(in) :: field
+        real(wp), intent(in) :: dx, dy
+        real(wp), dimension(0:nx, 0:ny), intent(in) :: field
         
         integer :: unit_num, i, j
-        real(8) :: x, y
+        real(wp) :: x, y
         
         open(newunit=unit_num, file=filename, status='replace', action='write')
         
@@ -162,7 +159,7 @@ contains
                 y = j * dy
                 write(unit_num, '(3E20.10)') x, y, field(i,j)
             end do
-            write(unit_num, *)  ! Blank line for gnuplot
+            write(unit_num, *)
         end do
         
         close(unit_num)
@@ -172,11 +169,11 @@ contains
     ! Write centerline velocity profiles for validation
     subroutine write_centerline_profiles(u, v, nx, ny, dx, dy)
         integer, intent(in) :: nx, ny
-        real(8), intent(in) :: dx, dy
-        real(8), dimension(0:nx, 0:ny), intent(in) :: u, v
+        real(wp), intent(in) :: dx, dy
+        real(wp), dimension(0:nx, 0:ny), intent(in) :: u, v
         
         integer :: unit_num, i, j, i_mid, j_mid
-        real(8) :: x, y
+        real(wp) :: x, y
         
         i_mid = nx / 2  ! x = 0.5
         j_mid = ny / 2  ! y = 0.5

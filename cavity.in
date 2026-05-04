@@ -14,10 +14,15 @@ dt  0.001           # Time step size
 max_time_steps  100000   # Maximum number of time steps
 tol_steady  1.0e-6  # Convergence tolerance for steady state
 
-# Poisson solver (SOR)
-omega_sor  1.87      # SOR relaxation parameter (1.0 < ω < 2.0)
-max_iter_psi  10000 # Maximum iterations for Poisson solver
-tol_psi  1.0e-6     # Tolerance for Poisson solver
+# Stream Function Poisson Solver (SOR)
+omega_sor  1.87      # SOR relaxation parameter for psi
+max_iter_psi  10000  # Max iterations for Poisson solver
+tol_psi  1.0e-6      # Tolerance for Poisson solver
+
+# Pressure Solver (SOR)
+omega_sor_p  1.5     # SOR relaxation parameter for pressure
+max_iter_pressure  20000 # Max iterations for pressure solver
+tol_pressure  1.0e-6 # Tolerance for pressure solver
 
 # Output
 output_interval  1000  # Print progress every N steps
